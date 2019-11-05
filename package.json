@@ -31,5 +31,8 @@
   "bugs": {
     "url": "https://github.com/f/graphql-client/issues"
   },
-  "homepage": "https://github.com/f/graphql-client#readme"
+  "homepage": "https://github.com/f/graphql-client#readme",
+  "dependencies": {
+    "uglify-js": "^3.6.7"
+  }
 }

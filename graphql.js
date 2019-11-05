@@ -31,54 +31,24 @@
     })
   }
 
-  if (typeof XMLHttpRequest !== 'undefined') {
-    function __doRequest(
-      method, url, contentType, accept, headers, body, _onRequestError, callback
-    ) {
-      var xhr = new XMLHttpRequest
-      xhr.open(method, url, true)
-      xhr.setRequestHeader('Content-Type', contentType)
-      xhr.setRequestHeader('Accept', accept)
-      for (var key in headers) { xhr.setRequestHeader(key, headers[key]) }
-      xhr.onerror = function () { callback(xhr, xhr.status) }
-      xhr.onload = function () {
-        try {
-          callback(JSON.parse(xhr.responseText), xhr.status)
-        }
-        catch (e) {
-          callback(xhr, xhr.status)
-        }
+  function __doRequest(
+    method, url, contentType, accept, headers, body, _onRequestError, callback
+  ) {
+    var xhr = new window.XMLHttpRequest();
+    xhr.open(method, url, true);
+    xhr.setRequestHeader('Content-Type', contentType);
+    xhr.setRequestHeader('Accept', accept);
+    for (var key in headers) { xhr.setRequestHeader(key, headers[key]) }
+    xhr.onerror = function () { callback(xhr, xhr.status) }
+    xhr.onload = function () {
+      try {
+        callback(JSON.parse(xhr.responseText), xhr.status)
       }
-      xhr.send(body)
-    }
-  } else if (typeof require === 'function') {
-    function __doRequest(
-      method, url, contentType, accept, headers, body, onRequestError, callback
-    ) {
-      var http = require('http'), https = require('https'), URL = require('url'), uri = URL.parse(url)
-      var req = (uri.protocol === 'https:' ? https : http).request({
-        protocol: uri.protocol,
-        hostname: uri.hostname,
-        port: uri.port,
-        path: uri.path,
-        method: method.toUpperCase(),
-        headers: __extend({ 'Content-type': contentType, 'Accept': accept }, headers)
-      }, function (response) {
-        var str = ''
-        response.setEncoding('utf8')
-        response.on('data', function (chunk) { str += chunk })
-        response.on('end', function () {
-          callback(JSON.parse(str), response.statusCode)
-        })
-      })
-      if (typeof onRequestError === 'function') {
-        req.on('error', function (err) {
-          onRequestError(err);
-        });
+      catch (e) {
+        callback(xhr, xhr.status)
       }
-      req.write(body)
-      req.end()
     }
+    xhr.send(body)
   }
 
   function __request(debug, method, url, headers, data, asJson, onRequestError, callback) {
